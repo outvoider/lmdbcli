@@ -291,7 +291,7 @@ public:
 		if (rc != 0)
 		{
 			mdb_env_close(env);
-			throw exception("ClientLmdb::Remove(): failed to create an environment");
+			throw exception("ClientLmdb::Query(): failed to create an environment");
 		}
 
 		rc = mdb_env_open(env, path.c_str(), 0, 0664);
@@ -299,7 +299,7 @@ public:
 		if (rc != 0)
 		{
 			mdb_env_close(env);
-			throw exception("ClientLmdb::Set(): failed to open an environment");
+			throw exception("ClientLmdb::Query(): failed to open an environment");
 		}
 
 		rc = mdb_txn_begin(env, NULL, 0, &txn);
@@ -308,7 +308,7 @@ public:
 		{
 			mdb_txn_abort(txn);
 			mdb_env_close(env);
-			throw exception("ClientLmdb::Remove(): failed to begin a transaction");
+			throw exception("ClientLmdb::Query(): failed to begin a transaction");
 		}
 
 		rc = mdb_open(txn, NULL, 0, &dbi);
@@ -318,7 +318,7 @@ public:
 			mdb_txn_abort(txn);
 			mdb_close(env, dbi);
 			mdb_env_close(env);
-			throw exception("ClientLmdb::Remove(): failed to open a database");
+			throw exception("ClientLmdb::Query(): failed to open a database");
 		}
 
 		rc = mdb_cursor_open(txn, dbi, &cursor);
@@ -329,7 +329,7 @@ public:
 			mdb_txn_abort(txn);
 			mdb_close(env, dbi);
 			mdb_env_close(env);
-			throw exception("ClientLmdb::Remove(): failed to open a cursor");
+			throw exception("ClientLmdb::Query(): failed to open a cursor");
 		}
 
 		while (0 == (rc = mdb_cursor_get(cursor, &key_p, &data_p, MDB_NEXT)))
